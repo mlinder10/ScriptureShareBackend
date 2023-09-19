@@ -7,7 +7,7 @@ dotenv.config();
 import authRouter from "./routes/auth"
 import chapterRouter from "./routes/chapter"
 
-mongoose.connect("mongodb://localhost/scriptureshare");
+mongoose.connect(process.env.DB_URL || "");
 const db = mongoose.connection;
 const PORT = process.env.PORT || 3001;
 const app = express();
