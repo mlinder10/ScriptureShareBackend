@@ -15,14 +15,15 @@ router.get("/", async (req, res) => {
     const plainText = $("p.p")
       .map((_, element) => $(element).text())
       .get()
-      .join(" ");
-    return res
-      .status(200)
-      .json({
-        content: plainText,
-        next: response.data.data.next.id,
-        previous: response.data.data.previous.id,
-      });
+      .join(" ")
+      .replace("¶", "");
+    const linesArray = plainText.split(/\d/).filter(line => line.trim() !== "");
+
+    return res.status(200).json({
+      content: linesArray,
+      next: response.data.data.next.id,
+      previous: response.data.data.previous.id,
+    });
   } catch (err: any) {
     console.error(err?.message);
     return res.status(500).json({ message: "Internal service error" });

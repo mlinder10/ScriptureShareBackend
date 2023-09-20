@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
     },
     default: {
       _id: uuid().toString(),
-      date: Date.now(),
+      date: new Date(),
     },
   },
   username: {
