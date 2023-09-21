@@ -10,6 +10,10 @@ const noteSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  lineNumbers: {
+    type: [Number],
+    required: true,
+  },
   userId: {
     type: String,
     required: true,

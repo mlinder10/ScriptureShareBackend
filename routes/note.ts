@@ -16,11 +16,12 @@ router.get("/:version/:chapter/:_id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { lines, userId, version, book, chapter, content } = req.body;
-    if (!lines || !userId || !version || !book || !chapter || !content)
+    const { lines, userId, version, book, chapter, content, lineNumbers } = req.body;
+    if (!lines || !userId || !version || !book || !chapter || !content || !lineNumbers)
       return res.status(400).json({ message: "Invalid request body" });
     const note = await Note.create({
       lines,
+      lineNumbers,
       userId,
       version,
       book,
