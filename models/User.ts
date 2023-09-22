@@ -3,17 +3,14 @@ import mongoose from "mongoose";
 const UserSchema = new mongoose.Schema({
   _id: {
     type: String,
-    default: Date.now().toString(),
+    required: true,
   },
   token: {
     type: {
       _id: String,
       date: Date,
     },
-    default: {
-      _id: Date.now().toString(),
-      date: new Date(),
-    },
+    required: true,
   },
   username: {
     type: String,

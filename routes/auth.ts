@@ -1,6 +1,7 @@
 import express from "express";
 import User from "../models/User";
 import bcrypt from "bcrypt";
+import { v4 as uuid } from "uuid";
 
 const router = express.Router();
 
@@ -73,7 +74,11 @@ router.post("/", async (req, res) => {
     if (existingUsername)
       return res.status(400).json({ message: "Existing username" });
     const encryptedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, password: encryptedPassword });
+    const user = await User.create({
+      _id: uuid().toString(),
+      username,
+      password: encryptedPassword,
+    });
     return res.status(201).json({ user });
   } catch (err: any) {
     console.error(err?.message);

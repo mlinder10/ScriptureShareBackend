@@ -1,5 +1,6 @@
 import express from "express";
 import Note from "../models/Note";
+import { v4 as uuid } from "uuid";
 
 const router = express.Router();
 
@@ -16,10 +17,20 @@ router.get("/:version/:chapter/:_id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { lines, userId, version, book, chapter, content, lineNumbers } = req.body;
-    if (!lines || !userId || !version || !book || !chapter || !content || !lineNumbers)
+    const { lines, userId, version, book, chapter, content, lineNumbers } =
+      req.body;
+    if (
+      !lines ||
+      !userId ||
+      !version ||
+      !book ||
+      !chapter ||
+      !content ||
+      !lineNumbers
+    )
       return res.status(400).json({ message: "Invalid request body" });
     const note = await Note.create({
+      _id: uuid().toString(),
       lines,
       lineNumbers,
       userId,
