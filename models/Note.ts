@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
-import { v4 as uuid } from "uuid";
 
 const noteSchema = new mongoose.Schema({
   _id: {
     type: String,
-    default: uuid().toString(),
+    default: Date.now().toString(),
   },
   lines: {
     type: [String],

@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
-import { v4 as uuid } from "uuid";
 
 const UserSchema = new mongoose.Schema({
   _id: {
     type: String,
-    default: uuid().toString(),
+    default: Date.now().toString(),
   },
   token: {
     type: {
@@ -12,7 +11,7 @@ const UserSchema = new mongoose.Schema({
       date: Date,
     },
     default: {
-      _id: uuid().toString(),
+      _id: Date.now().toString(),
       date: new Date(),
     },
   },
