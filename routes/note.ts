@@ -1,14 +1,21 @@
 import express from "express";
 import Note from "../models/Note";
 import { v4 as uuid } from "uuid";
+import User from "../models/User";
 
 const router = express.Router();
 
 router.get("/:version/:chapter/:_id", async (req, res) => {
   try {
     const { version, chapter, _id } = req.params;
+    const user = await User.findOne({ _id });
     const notes = await Note.find({ version, chapter });
-    return res.status(200).json({ notes });
+    let validNotes = [];
+    for (const note of notes) {
+      if (note.userId === _id || user.friends.includes(note.userId))
+        validNotes.push(note);
+    }
+    return res.status(200).json({ notes: validNotes });
   } catch (err: any) {
     console.error(err?.message);
     return res.status(500).json({ message: "Internal service error" });

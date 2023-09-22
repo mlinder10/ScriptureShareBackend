@@ -6,11 +6,14 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   token: {
-    type: {
-      _id: String,
-      date: Date,
+    _id: {
+      type: String,
+      required: true,
     },
-    required: true,
+    date: {
+      type: Date,
+      required: true,
+    },
   },
   username: {
     type: String,

@@ -22,12 +22,19 @@ async function loginWithToken(token: string) {
   try {
     const users = await User.find();
     for (const user of users) {
-      if (user.token.id === token) return user;
+      if (user.token._id === token) return user;
     }
     return null;
   } catch {
     return null;
   }
+}
+
+function generateToken() {
+  return {
+    _id: uuid().toString(),
+    date: new Date(Date.now()),
+  };
 }
 
 router.get("/", async (req, res) => {
@@ -48,10 +55,10 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/token", async (req, res) => {
+router.get("/:token", async (req, res) => {
   // TODO only return token id
   try {
-    const { token } = req.query;
+    const { token } = req.params;
     if (typeof token !== "string")
       return res.status(400).json({ message: "Invalid token" });
     const user = await loginWithToken(token);
@@ -74,8 +81,11 @@ router.post("/", async (req, res) => {
     if (existingUsername)
       return res.status(400).json({ message: "Existing username" });
     const encryptedPassword = await bcrypt.hash(password, 10);
+    const token = generateToken();
     const user = await User.create({
       _id: uuid().toString(),
+      "token._id": token._id,
+      "token.date": token.date,
       username,
       password: encryptedPassword,
     });
