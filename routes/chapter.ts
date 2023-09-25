@@ -1,6 +1,5 @@
 import express from "express";
 import axios from "axios";
-import cheerio from "cheerio";
 
 const router = express.Router();
 
@@ -8,19 +7,22 @@ router.get("/", async (req, res) => {
   try {
     const { bible, chapter } = req.query;
     const response = await axios.get(
-      `https://api.scripture.api.bible/v1/bibles/${bible}/chapters/${chapter}?content-type=html&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false`,
+      `https://api.scripture.api.bible/v1/bibles/${bible}/chapters/${chapter}?content-type=text&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false`,
       { headers: { "api-key": process.env.BIBLE_API_KEY } }
     );
-    const $ = cheerio.load(response.data.data.content);
-    const plainText = $("p.p")
-      .map((_, element) => $(element).text())
-      .get()
-      .join(" ")
-      .replace("¶", "");
-    const linesArray = plainText.split(/\d/).filter(line => line.trim() !== "");
+    let verseNumber = 1;
+    const stringParagraphs = response.data.data.content.split("\n");
+    let verseParagraphs: any = [];
+    for (const paragraph of stringParagraphs) {
+      const verses = paragraph
+        .split(/\[\d{1,2}\]/)
+        .filter((v: string) => v !== "     ")
+        .map((v: string) => (v = `[${verseNumber++}]` + v));
+      verseParagraphs.push(verses);
+    }
 
     return res.status(200).json({
-      content: linesArray,
+      content: verseParagraphs,
       next: response.data.data.next.id,
       previous: response.data.data.previous.id,
     });
