@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
     }
 
     for (const paragraph of verseParagraphs) {
-      content.push("LINE_BREAK")
+      content.push("\n\t")
       for (const verse of paragraph) {
         content.push(verse)
       }
