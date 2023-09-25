@@ -10,6 +10,7 @@ router.get("/", async (req, res) => {
       `https://api.scripture.api.bible/v1/bibles/${bible}/chapters/${chapter}?content-type=text&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false`,
       { headers: { "api-key": process.env.BIBLE_API_KEY } }
     );
+    let content = []
     let verseNumber = 1;
     const stringParagraphs = response.data.data.content.split("\n");
     let verseParagraphs: any = [];
@@ -21,8 +22,15 @@ router.get("/", async (req, res) => {
       verseParagraphs.push(verses);
     }
 
+    for (const paragraph of verseParagraphs) {
+      content.push("\n\t")
+      for (const verse of paragraph) {
+        content.push(verse)
+      }
+    }
+
     return res.status(200).json({
-      content: verseParagraphs,
+      content,
       next: response.data.data.next.id,
       previous: response.data.data.previous.id,
     });
