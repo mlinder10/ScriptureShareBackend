@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 import { checkApiKey } from "./helpers";
 dotenv.config();
 import authRouter from "./routes/auth"
-import chapterRouter from "./routes/chapter"
 import noteRouter from "./routes/note"
 
 mongoose.connect(process.env.DB_URL || "");
@@ -17,7 +16,6 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(checkApiKey)
 app.use("/auth", authRouter)
-app.use("/chapter", chapterRouter)
 app.use("/note", noteRouter)
 
 db.once("open", () => {
