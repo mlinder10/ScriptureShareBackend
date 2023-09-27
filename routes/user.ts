@@ -8,7 +8,7 @@ router.get("/:_id", async (req, res) => {
     const { _id } = req.params;
     const user = await User.findOne({ _id });
     const users = await User.find({ _id: { $nin: [_id, ...user.friends] } });
-    return res.status(200).json(users);
+    return res.status(200).json({ users });
   } catch (err: any) {
     console.error(err?.message);
     return res.status(500).json({ message: "Internal service error" });
