@@ -15,4 +15,15 @@ router.get("/:_id", async (req, res) => {
   }
 });
 
+router.patch("/image", async (req, res) => {
+  try {
+    const { path, _id } = req.body;
+    await User.updateOne({ _id }, { profilePic: path });
+    return res.status(202).json({ message: "success" });
+  } catch (err: any) {
+    console.error(err?.message);
+    return res.status(500).json({ message: "Internal service error" });
+  }
+});
+
 export default router;
