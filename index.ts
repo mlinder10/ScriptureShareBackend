@@ -6,6 +6,7 @@ import { checkApiKey } from "./helpers";
 dotenv.config();
 import authRouter from "./routes/auth"
 import noteRouter from "./routes/note"
+import userRouter from "./routes/user"
 
 mongoose.connect(process.env.DB_URL || "");
 const db = mongoose.connection;
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(checkApiKey)
 app.use("/auth", authRouter)
 app.use("/note", noteRouter)
+app.use("/user", userRouter)
 
 db.once("open", () => {
   app.listen(PORT, () => console.log(`server running on port ${PORT}`));
