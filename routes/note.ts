@@ -9,13 +9,28 @@ router.get("/:version/:chapter/:_id", async (req, res) => {
   try {
     const { version, chapter, _id } = req.params;
     const user = await User.findOne({ _id });
-    const notes = await Note.find({ version, chapter });
+    // const notes = await Note.find({ version, chapter });
+    const notes = await Note.find({ chapter });
     let validNotes = [];
     for (const note of notes) {
       if (note.userId === _id || user.friends.includes(note.userId))
         validNotes.push(note);
     }
     return res.status(200).json({ notes: validNotes });
+  } catch (err: any) {
+    console.error(err?.message);
+    return res.status(500).json({ message: "Internal service error" });
+  }
+});
+
+router.get("/:_id", async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const user = await User.findOne({ _id });
+    const notes = await Note.find({
+      userId: (id: string) => user.friends.includes(id),
+    });
+    return res.status(200).json({notes})
   } catch (err: any) {
     console.error(err?.message);
     return res.status(500).json({ message: "Internal service error" });
