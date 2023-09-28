@@ -3,7 +3,8 @@ import User from "../models/User";
 
 const router = express.Router();
 
-router.get("/:_id", async (req, res) => {
+// users not freinds with user passed by _id
+router.get("/nfriends/:_id", async (req, res) => {
   try {
     const { _id } = req.params;
     const user = await User.findOne({ _id });
@@ -15,6 +16,20 @@ router.get("/:_id", async (req, res) => {
   }
 });
 
+// freinds of user
+router.get("/friends/:_id", async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const user = await User.findOne({ _id });
+    const friends = await User.find({ id: { $in: user.friends } });
+    return res.status(200).json({ friends });
+  } catch (err: any) {
+    console.error(err?.message);
+    return res.status(500).json({ message: "Internal service error" });
+  }
+});
+
+// storing image path in user object
 router.patch("/image", async (req, res) => {
   try {
     const { path, _id } = req.body;
@@ -26,6 +41,7 @@ router.patch("/image", async (req, res) => {
   }
 });
 
+// adding freinds
 router.patch("/friend", async (req, res) => {
   try {
     const { _id, friend_id } = req.body;
