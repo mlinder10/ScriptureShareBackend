@@ -21,7 +21,7 @@ router.get("/friends/:_id", async (req, res) => {
   try {
     const { _id } = req.params;
     const user = await User.findOne({ _id });
-    const friends = await User.find({ id: { $in: user.friends } });
+    const friends = await User.find({ _id: { $in: user.friends } });
     return res.status(200).json({ friends });
   } catch (err: any) {
     console.error(err?.message);
