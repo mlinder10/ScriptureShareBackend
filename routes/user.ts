@@ -31,7 +31,8 @@ router.patch("/friend", async (req, res) => {
     const { _id, friend_id } = req.body;
     await User.findOneAndUpdate(
       { _id },
-      { friends: (friends: string[]) => friends.push(friend_id) }
+      { $push: { friends: friend_id } },
+      { new: true }
     );
     return res.status(202).json({ message: "success" });
   } catch (err: any) {
