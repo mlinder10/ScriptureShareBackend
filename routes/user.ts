@@ -26,4 +26,18 @@ router.patch("/image", async (req, res) => {
   }
 });
 
+router.patch("/friend", async (req, res) => {
+  try {
+    const { _id, friend_id } = req.body;
+    await User.findOneAndUpdate(
+      { _id },
+      { friends: (friends: string[]) => friends.push(friend_id) }
+    );
+    return res.status(202).json({ message: "success" });
+  } catch (err: any) {
+    console.error(err?.message);
+    return res.status(500).json({ message: "Internal service error" });
+  }
+});
+
 export default router;
