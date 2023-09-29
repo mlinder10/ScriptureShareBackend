@@ -53,7 +53,7 @@ router.get("/friends/:_id", async (req, res) => {
 router.get("/:_id", async (req, res) => {
   try {
     const { _id } = req.params;
-    const notes = await Note.find({ userId: _id });
+    const notes = await Note.find({ userId: _id }).sort({ timestamp: -1 });
     return res.status(200).json({ notes });
   } catch (err: any) {
     console.error(err?.message);
