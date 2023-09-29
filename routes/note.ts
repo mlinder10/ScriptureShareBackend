@@ -25,20 +25,33 @@ router.get("/:version/:chapter/:_id", async (req, res) => {
 router.get("/friends/:_id", async (req, res) => {
   try {
     const { _id } = req.params;
-    let { limit, offset } = req.query;
+    const { limit, offset } = req.query;
     if (
       (typeof limit !== "string" && limit !== undefined) ||
       (typeof offset !== "string" && offset !== undefined)
     )
       return res.status(400).json({ message: "Invalid limit or offset" });
+    let intLimit = parseInt(limit ?? "50");
+    let intOffset = parseInt(offset ?? "0");
 
     const user = await User.findOne({ _id });
+    const totalDocuments = await Note.countDocuments({
+      userId: { $in: user.friends },
+    });
+
+    if (intOffset + intLimit > totalDocuments) {
+      intLimit = totalDocuments - intOffset;
+      if (intLimit < 0) {
+        intLimit = 0; // Ensure a non-negative limit
+      }
+    }
+
     const notes = await Note.find({
       userId: { $in: user.friends },
     })
       .sort({ _id: -1 })
-      .skip(parseInt(offset ?? "0"))
-      .limit(parseInt(limit ?? "50"));
+      .skip(intOffset)
+      .limit(intLimit);
     return res.status(200).json({ notes });
   } catch (err: any) {
     console.error(err?.message);
