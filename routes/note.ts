@@ -5,15 +5,39 @@ import User from "../models/User";
 
 const router = express.Router();
 
+// get notes of current chapter
 router.get("/:version/:chapter/:_id", async (req, res) => {
   try {
     const { version, chapter, _id } = req.params;
     const user = await User.findOne({ _id });
-    // const notes = await Note.find({ version, chapter });
     const notes = await Note.find({
       chapter,
       userId: { $in: [_id, ...user.friends] },
-    });
+    }).then((array) => array.reverse());
+    return res.status(200).json({ notes });
+  } catch (err: any) {
+    console.error(err?.message);
+    return res.status(500).json({ message: "Internal service error" });
+  }
+});
+
+// get friends notes
+router.get("/friends/:_id", async (req, res) => {
+  try {
+    const { _id } = req.params;
+    let { limit, offset } = req.query;
+    if (
+      (typeof limit !== "string" && limit !== undefined) ||
+      (typeof offset !== "string" && offset !== undefined)
+    )
+      return res.status(400).json({ message: "Invalid limit or offset" });
+
+    const user = await User.findOne({ _id });
+    const notes = await Note.find({
+      userId: { $in: user.friends },
+    })
+      .skip(parseInt(offset ?? "0"))
+      .limit(parseInt(limit ?? "50"));
     return res.status(200).json({ notes });
   } catch (err: any) {
     console.error(err?.message);
@@ -24,10 +48,7 @@ router.get("/:version/:chapter/:_id", async (req, res) => {
 router.get("/:_id", async (req, res) => {
   try {
     const { _id } = req.params;
-    const user = await User.findOne({ _id });
-    const notes = await Note.find({
-      userId: { $in: user.friends },
-    });
+    const notes = await Note.find({ _id });
     return res.status(200).json({ notes });
   } catch (err: any) {
     console.error(err?.message);
