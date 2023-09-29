@@ -36,6 +36,7 @@ router.get("/friends/:_id", async (req, res) => {
     const notes = await Note.find({
       userId: { $in: user.friends },
     })
+      .sort({ _id: -1 })
       .skip(parseInt(offset ?? "0"))
       .limit(parseInt(limit ?? "50"));
     return res.status(200).json({ notes });
