@@ -3,7 +3,11 @@ import mongoose from "mongoose";
 const noteSchema = new mongoose.Schema({
   _id: {
     type: String,
-    default: Date.now().toString(),
+    required: true,
+  },
+  timestamp: {
+    type: Date,
+    required: true,
   },
   lines: {
     type: [String],
