@@ -45,14 +45,14 @@ router.patch("/image", async (req, res) => {
 router.patch("/friend", async (req, res) => {
   try {
     const { _id, friend_id, friend } = req.body;
-    if (friend === "false") {
+    if (friend === false) {
       await User.updateOne(
         { _id },
         { $push: { friends: friend_id } },
         { new: true }
       );
     }
-    if (friend === "true") {
+    if (friend === true) {
       await User.updateOne(
         { _id },
         { $pull: { friends: friend_id } },
