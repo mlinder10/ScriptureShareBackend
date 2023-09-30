@@ -44,12 +44,21 @@ router.patch("/image", async (req, res) => {
 // adding freinds
 router.patch("/friend", async (req, res) => {
   try {
-    const { _id, friend_id } = req.body;
-    await User.findOneAndUpdate(
-      { _id },
-      { $push: { friends: friend_id } },
-      { new: true }
-    );
+    const { _id, friend_id, friend } = req.body;
+    if (friend === "false") {
+      await User.updateOne(
+        { _id },
+        { $push: { friends: friend_id } },
+        { new: true }
+      );
+    }
+    if (friend === "true") {
+      await User.updateOne(
+        { _id },
+        { $pull: { friends: friend_id } },
+        { multi: true }
+      );
+    }
     return res.status(202).json({ message: "success" });
   } catch (err: any) {
     console.error(err?.message);

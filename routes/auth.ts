@@ -2,40 +2,14 @@ import express from "express";
 import User from "../models/User";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
+import {
+  loginWithUsernameAndPassword,
+  loginWithToken,
+  generateToken,
+  generateRandomColor,
+} from "../helpers";
 
 const router = express.Router();
-
-async function loginWithUsernameAndPassword(
-  username: string,
-  password: string
-) {
-  try {
-    const user = await User.findOne({ username });
-    if (bcrypt.compareSync(password, user.password)) return user;
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-async function loginWithToken(token: string) {
-  try {
-    const users = await User.find();
-    for (const user of users) {
-      if (user.token._id === token) return user;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-function generateToken() {
-  return {
-    _id: uuid().toString(),
-    date: new Date(Date.now()),
-  };
-}
 
 router.get("/", async (req, res) => {
   // TODO only return token id
@@ -88,6 +62,7 @@ router.post("/", async (req, res) => {
       "token.date": token.date,
       username,
       password: encryptedPassword,
+      color: generateRandomColor(),
     });
     return res.status(201).json({ user });
   } catch (err: any) {
@@ -101,6 +76,22 @@ router.delete("/", async (req, res) => {
     const { _id } = req.query;
     await User.findOneAndRemove({ _id });
     return res.status(202).json({ message: "Successfully deleted user" });
+  } catch (err: any) {
+    console.error(err?.message);
+    return res.status(500).json({ message: "Internal service error" });
+  }
+});
+
+router.get("/test/test", async (req, res) => {
+  try {
+    const users = await User.find();
+    for (const user of users) {
+      await User.updateOne(
+        { _id: user._id },
+        { $set: { color: generateRandomColor() } }
+      );
+    }
+    return res.status(200).json({ message: "success" });
   } catch (err: any) {
     console.error(err?.message);
     return res.status(500).json({ message: "Internal service error" });

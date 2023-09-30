@@ -27,6 +27,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  color: {
+    type: String,
+    required: true,
+  },
   friends: {
     type: [String],
     default: [],
