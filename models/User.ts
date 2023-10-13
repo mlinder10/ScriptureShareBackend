@@ -43,6 +43,24 @@ const UserSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
+  version: {
+    id: {
+      type: String,
+      default: "de4e12af7f28f599-02",
+    },
+    abbreviation: {
+      type: String,
+      default: "KJV",
+    },
+    name: {
+      type: String,
+      default: "King James (Authorised) Version",
+    },
+  },
+  chapter: {
+    type: String,
+    default: "GEN.1",
+  },
 });
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);
