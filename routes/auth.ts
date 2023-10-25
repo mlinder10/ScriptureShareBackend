@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
       return res
         .status(400)
         .json({ message: "Incorrect username or password" });
-    return res.status(200).json({ user });
+    return res.status(200).json({ ...user, password });
   } catch (err: any) {
     console.error(err?.message);
     return res.status(500).json({ message: "Internal service error" });
@@ -64,7 +64,7 @@ router.post("/", async (req, res) => {
       password: encryptedPassword,
       color: generateRandomColor(),
     });
-    return res.status(201).json({ user });
+    return res.status(201).json({ ...user, password });
   } catch (err: any) {
     console.error(err?.message);
     return res.status(500).json({ message: "Internal service error" });
@@ -84,13 +84,6 @@ router.delete("/", async (req, res) => {
 
 router.get("/test/test", async (req, res) => {
   try {
-    const users = await User.find();
-    for (const user of users) {
-      await User.updateOne(
-        { _id: user._id },
-        { $set: { color: generateRandomColor() } }
-      );
-    }
     return res.status(200).json({ message: "success" });
   } catch (err: any) {
     console.error(err?.message);
