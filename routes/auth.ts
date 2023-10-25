@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
         .status(400)
         .json({ message: "Incorrect username or password" });
     const rawUser = { ...user, password };
-    return res.status(200).json({ user: rawUser });
+    return res.status(200).json({ user });
   } catch (err: any) {
     console.error(err?.message);
     return res.status(500).json({ message: "Internal service error" });
