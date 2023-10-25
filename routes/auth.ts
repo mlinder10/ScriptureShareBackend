@@ -22,7 +22,8 @@ router.get("/", async (req, res) => {
       return res
         .status(400)
         .json({ message: "Incorrect username or password" });
-    return res.status(200).json({ user: { ...user, password } });
+    const rawUser = { ...user, password };
+    return res.status(200).json({ user: rawUser });
   } catch (err: any) {
     console.error(err?.message);
     return res.status(500).json({ message: "Internal service error" });
@@ -64,7 +65,8 @@ router.post("/", async (req, res) => {
       password: encryptedPassword,
       color: generateRandomColor(),
     });
-    return res.status(201).json({ user: { ...user, password } });
+    const rawUser = { ...user, password };
+    return res.status(201).json({ user: rawUser });
   } catch (err: any) {
     console.error(err?.message);
     return res.status(500).json({ message: "Internal service error" });
