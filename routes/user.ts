@@ -69,8 +69,8 @@ router.patch("/friend", async (req, res) => {
 router.patch("/book", async (req, res) => {
   try {
     const { _id, version, chapter } = req.body;
-    await User.updateOne({ _id }, { version, chapter });
-    return res.status(202).json({ message: "success" });
+    const result = await User.updateOne({ _id }, { version, chapter });
+    return res.status(202).json({ message: result });
   } catch (err: any) {
     console.error(err?.message);
     return res.status(500).json({ message: err?.message });
